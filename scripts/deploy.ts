@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
 
 async function main() {
@@ -5,14 +6,16 @@ async function main() {
   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
   const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  const BatchSender = await ethers.getContractFactory("BatchSender");
+  const TestERC20 = await ethers.getContractFactory("TestERC20");
+  const batchSender = await BatchSender.deploy();
+  const testERC20 = await TestERC20.deploy(BigNumber.from(10).pow(35));
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  await testERC20.deployed();
+  await batchSender.deployed();
 
-  await lock.deployed();
-
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
+  console.log(`batchSender: ${batchSender.address}`);
+  console.log(`testERC20: ${testERC20.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

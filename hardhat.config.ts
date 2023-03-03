@@ -1,5 +1,6 @@
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+require("dotenv").config();
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -10,6 +11,11 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 const config: HardhatUserConfig = {
+  etherscan: {
+    apiKey: {
+      polygonMumbai: process.env.POLYGONSCAN_KEY || "",
+    },
+  },
   solidity: {
     compilers: [
       {
@@ -28,6 +34,12 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: "https://rpc.ankr.com/bsc",
+      },
+    },
+    mumbai: {
+      url: "https://matic-mumbai.chainstacklabs.com",
+      accounts: {
+        mnemonic: process.env.NODE_ARRAY,
       },
     },
   },
